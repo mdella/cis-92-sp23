@@ -1,2 +1,4 @@
-# cis-92-sp23
-My course work for CIS-92
+# My CIS-92 Project for Sprint 2023
+
+My course work for CIS-92.
+
