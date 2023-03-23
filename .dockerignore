@@ -1,0 +1,13 @@
+# List of files to ignore when copying into the container
+
+tmp*
+**/tmp*
+
+.*.swp
+**/.*.swp
+
+.github
+
+.dockerignore
+Dockerfile
+#db.sqlite3
