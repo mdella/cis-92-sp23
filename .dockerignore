@@ -10,4 +10,4 @@ tmp*
 
 .dockerignore
 Dockerfile
-#db.sqlite3
+db.sqlite3
