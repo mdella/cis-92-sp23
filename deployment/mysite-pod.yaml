@@ -9,11 +9,31 @@ metadata:
 spec:
   containers:
   - name: httpd
-    image: ghcr.io/mdella/cis-92-sp23:milestone-4.3.2
+    image: ghcr.io/mdella/cis-92-sp23:milestone-6.0
+    resources:
+      requests:
+        cpu: 250m
+        memory: 128Mi
+      limits:
+        cpu: 1000m 
+        memory: 1Gi
+        ephemeral-storage: 10Mi
+    livenessProbe:
+      httpGet:
+        path: /polls
+        port: 80
     ports:
     - containerPort: 80
     env:
     - name: PORT
       value: "80"
     - name: SECRET_KEY
-      value: "123abc"
+      value: "django-insecure-iuwe(&*^#Uhr9uhi(@#G))"
+    - name: DB_NAME
+      value: "mysite"
+    - name: DB_USER
+      value: "postgres"
+    - name: DB_PASSWORD
+      value: "django"
+    - name: DB_HOST
+      value: "postgres"
