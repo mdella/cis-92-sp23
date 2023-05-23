@@ -28,7 +28,7 @@ spec:
     - name: PORT
       value: "80"
     - name: SECRET_KEY
-      value: "django-insecure-iuwe(&*^#Uhr9uhi(@#G))"
+      value: "blahblah"
     - name: DB_NAME
       value: "mysite"
     - name: DB_USER
