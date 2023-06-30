@@ -1,5 +1,6 @@
 #cloud-config
-
+# vim: softtabstop=4 shiftwidth=4 expandtab fenc=utf-8 spell spelllang=en cc=120
+#
 # Author: Marcos Della (marcos.della@nutanix.com)
 #
 # Desc:
@@ -17,7 +18,6 @@ system_info:
   default_user:
     name: vpc-user
     gecos: Nutanix Default VPC user
-    passwd: '$5$SaltSalt$nar6zaHsaL8Ci0NoiGVTsuRhokg4gdVq4C9yiajIDj6'
     groups: adm, systemd-journal
     shell: /bin/bash
     chpasswd: { expire: false }
@@ -116,7 +116,7 @@ runcmd:
   - /bin/sed -i -e '/^# Host */s/^.*$/Host */' /etc/ssh/ssh_config
   - /bin/sed -i -e '/^#   ForwardAgent no/s/^.*$/  ForwardAgent yes/' /etc/ssh/ssh_config
   - /bin/sed -i -e '/^#   ForwardX11 no/s/^.*$/  ForwardX11 yes/' /etc/ssh/ssh_config
-  - /usr/bin/curl -L https://bootstrap.saltstack.com -o /run/install_salt.sh
+  - /usr/bin/curl -L https://bootstrap.saltstack.io -o /run/bootstrap_salt.sh
   - /usr/sbin/alternatives --set python /usr/bin/python3.11
   - /bin/update-crypto-policies --set DEFAULT
 
