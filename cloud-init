@@ -1,5 +1,4 @@
 #cloud-config
-# vim: softtabstop=4 shiftwidth=4 expandtab fenc=utf-8 spell spelllang=en cc=120
 #
 # Author: Marcos Della (marcos.della@nutanix.com)
 #
@@ -124,3 +123,5 @@ runcmd:
 
 
 final_message: VM setup successfully!
+
+# vim: softtabstop=4 shiftwidth=4 expandtab fenc=utf-8 spell spelllang=en cc=120
