@@ -1,0 +1,124 @@
+#cloud-config
+
+# Author: Marcos Della (marcos.della@nutanix.com)
+#
+# Desc:
+#   Designed to be used on Rocky Linux 8.x, Alma Linux 8.x, and RHEL 8.x
+
+#Set values for 'root' account
+disable_root: true
+ssh_pwauth: true
+
+ssh_deletekeys: true
+ssh_genkeytypes: ['rsa', 'ecdsa', 'ed25519']
+syslog_fix_perms: ~
+
+system_info:
+  default_user:
+    name: vpc-user
+    gecos: Nutanix Default VPC user
+    passwd: '$5$SaltSalt$nar6zaHsaL8Ci0NoiGVTsuRhokg4gdVq4C9yiajIDj6'
+    groups: adm, systemd-journal
+    shell: /bin/bash
+    chpasswd: { expire: false }
+    lock_passwd: false
+
+#network:
+#  config: disabled
+
+# ---
+# (see https://cloudinit.readthedocs.io/en/latest/reference/examples.html)
+
+# Add groups to the system
+# The following example adds the 'admingroup' group with members 'root' and 'sys'
+# and the empty group cloud-users.
+groups:
+#  - admingroup: [root,sys]
+  - cloud-users
+
+# Add users to the system. Users are added after groups are added.
+# Note: Most of these configuration options will not be honored if the user
+#       already exists. Following options are the exceptions and they are
+#       applicable on already-existing users:
+#       - 'plain_text_passwd', 'hashed_passwd', 'lock_passwd', 'sudo',
+#         'ssh_authorized_keys', 'ssh_redirect_user'.
+
+users:
+# vpc-user is meant for everyone to "jump into" and get to other places.
+# There is no password for this account (public_key access only). It has
+# no sudo access to the jump box itself. Use localadmin to get sudo access.
+  - name: vpc-user
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    ssh-authorized-keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINee+DEJf8mPYqFl4ENFFQ6kzoWMyiwcSwnQVSNIRJeO mdella-ed25519
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB6qSOz8HLczoeSSx/7zYYbcJ9bdoDhC21XzrRlQps5l marcos.della@nutanix.com
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDXinIs2MBDdT+KFNaBlgLMnpf4ePjNe1GQTvYuHud7bAeOKvXFDV6msR+oKlCRwe6EvLw9WNXFPv98gCM+GHSbRQlLLwrd/sbIYME32E9aDk8WSAJYdLD74eRcZD1c0/HOp4lVZYVcluZbG6GdMlbKKEk1iFy0xWNqFQJsymC+RA5cImV4I6vTyen6XFF8CG3Ix6SWtuqti2iqVGU2JwMnY/ESsgrroqwRGqKktczRBpVS+werktQ2vAKdHt7W+Wey5LnZkC4CeMpJK4KUzSrp7CkY0vrGkn6xbCoMCbY12oG7oP60u3o4XX2LbwWE65ycG50XlIJJrIk4OPrXo7Op marc.swingler@nutanix.com
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDOcpAdTVwmBHvOj1+Xwny8TnO2eWzuylW0hh5zOsSo7DcUlQjWJ0O03KwQN3hj3vC9o/IHuIJls655b8Z0JIDTqgaa3hT7BLSy/b6RNSeqYJflIg4DKVqknR7nWeGkdske8cCjBWHvWEUBquqFaLIPh0haKgjF02Encnqe9cW96YsP//tdC78wzArIErZtPmMlVd8HoolLW5XMiAHUbSNDbZqAy6iYn2m162Xax0GlgVCx2AURY0BaXsqL575ylGoVdlr02u4cRhOEy9FQ/IhjnVowne+nLXvV+/tDkOFQ4uzdYd1z9jf7d3uWsb/VgVG0QlWUANpX3wqWT/0roCh9 james.sodini@nutanix.com
+
+  - name: localadmin
+    chpasswd: { expire: False }
+    gecos: Local Administrator (sudo)
+    sudo:
+      - 'ALL=(ALL) NOPASSWD:ALL'
+    shell: /bin/bash
+    lock_passwd: true
+    ssh_pwauth: false
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB6qSOz8HLczoeSSx/7zYYbcJ9bdoDhC21XzrRlQps5l marcos.della@nutanix.com
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDXinIs2MBDdT+KFNaBlgLMnpf4ePjNe1GQTvYuHud7bAeOKvXFDV6msR+oKlCRwe6EvLw9WNXFPv98gCM+GHSbRQlLLwrd/sbIYME32E9aDk8WSAJYdLD74eRcZD1c0/HOp4lVZYVcluZbG6GdMlbKKEk1iFy0xWNqFQJsymC+RA5cImV4I6vTyen6XFF8CG3Ix6SWtuqti2iqVGU2JwMnY/ESsgrroqwRGqKktczRBpVS+werktQ2vAKdHt7W+Wey5LnZkC4CeMpJK4KUzSrp7CkY0vrGkn6xbCoMCbY12oG7oP60u3o4XX2LbwWE65ycG50XlIJJrIk4OPrXo7Op marc.swingler@nutanix.com
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDOcpAdTVwmBHvOj1+Xwny8TnO2eWzuylW0hh5zOsSo7DcUlQjWJ0O03KwQN3hj3vC9o/IHuIJls655b8Z0JIDTqgaa3hT7BLSy/b6RNSeqYJflIg4DKVqknR7nWeGkdske8cCjBWHvWEUBquqFaLIPh0haKgjF02Encnqe9cW96YsP//tdC78wzArIErZtPmMlVd8HoolLW5XMiAHUbSNDbZqAy6iYn2m162Xax0GlgVCx2AURY0BaXsqL575ylGoVdlr02u4cRhOEy9FQ/IhjnVowne+nLXvV+/tDkOFQ4uzdYd1z9jf7d3uWsb/VgVG0QlWUANpX3wqWT/0roCh9 james.sodini@nutanix.com
+
+# ---
+
+write_files:
+- encoding: b64
+  content: |
+    CiMgVGhpcyBmaWxlIGNvbnRyb2xzIHRoZSBzdGF0ZSBvZiBTRUxpbnV4IG9uIHRoZSBzeXN0ZW0u
+    CiMgU0VMSU5VWD0gY2FuIHRha2Ugb25lIG9mIHRoZXNlIHRocmVlIHZhbHVlczoKIyAgICAgZW5m
+    b3JjaW5nIC0gU0VMaW51eCBzZWN1cml0eSBwb2xpY3kgaXMgZW5mb3JjZWQuCiMgICAgIHBlcm1p
+    c3NpdmUgLSBTRUxpbnV4IHByaW50cyB3YXJuaW5ncyBpbnN0ZWFkIG9mIGVuZm9yY2luZy4KIyAg
+    ICAgZGlzYWJsZWQgLSBObyBTRUxpbnV4IHBvbGljeSBpcyBsb2FkZWQuClNFTElOVVg9cGVybWlz
+    c2l2ZQojIFNFTElOVVhUWVBFPSBjYW4gdGFrZSBvbmUgb2YgdGhlc2UgdGhyZWUgdmFsdWVzOgoj
+    ICAgICB0YXJnZXRlZCAtIFRhcmdldGVkIHByb2Nlc3NlcyBhcmUgcHJvdGVjdGVkLAojICAgICBt
+    aW5pbXVtIC0gTW9kaWZpY2F0aW9uIG9mIHRhcmdldGVkIHBvbGljeS4gT25seSBzZWxlY3RlZCBw
+    cm9jZXNzZXMgYXJlIHByb3RlY3RlZC4gCiMgICAgIG1scyAtIE11bHRpIExldmVsIFNlY3VyaXR5
+    IHByb3RlY3Rpb24uClNFTElOVVhUWVBFPXRhcmdldGVkCgoK
+  owner: root:root
+  path: /etc/selinux/config
+  permissions: '0644'
+
+package_update: true
+#package_upgrade: true
+packages:
+  - unzip
+  - mtr
+  - wget
+  - nmap
+  - lsof
+  - nc
+  - iperf3
+  - bind-utils
+  - net-tools
+  - whois
+  - traceroute
+  - python3
+  - python3.11
+  #  - make
+  #  - jq
+
+# Note: /tmp is not guarenteed to exist (potential race condition). Use /run
+runcmd:
+  - /usr/bin/echo "Hostname $HOSTNAME"
+  - /bin/sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin no/' /etc/ssh/sshd_config
+  - /bin/sed -i -e '/^PasswordAuthentication/s/^.*$/PasswordAuthentication no/' /etc/ssh/sshd_config
+  - /bin/sed -i -e '/^#AllowAgentForwarding/s/^.*$/AllowAgentForwarding yes/' /etc/ssh/sshd_config
+  - systemctl restart sshd
+  - /bin/sed -i -e '/^# Host */s/^.*$/Host */' /etc/ssh/ssh_config
+  - /bin/sed -i -e '/^#   ForwardAgent no/s/^.*$/  ForwardAgent yes/' /etc/ssh/ssh_config
+  - /bin/sed -i -e '/^#   ForwardX11 no/s/^.*$/  ForwardX11 yes/' /etc/ssh/ssh_config
+  - /usr/bin/curl -L https://bootstrap.saltstack.com -o /run/install_salt.sh
+  - /usr/sbin/alternatives --set python /usr/bin/python3.11
+  - /bin/update-crypto-policies --set DEFAULT
+
+
+final_message: VM setup successfully!
