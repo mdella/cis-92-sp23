@@ -72,6 +72,7 @@ users:
 # ---
 
 write_files:
+# The next section basically changes "SELINUX" from enforcing to permissive
 - encoding: b64
   content: |
     CiMgVGhpcyBmaWxlIGNvbnRyb2xzIHRoZSBzdGF0ZSBvZiBTRUxpbnV4IG9uIHRoZSBzeXN0ZW0u
